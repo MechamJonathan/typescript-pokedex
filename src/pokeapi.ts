@@ -46,11 +46,33 @@ export class PokeAPI {
             const data = (await resp.json()) as Location;
             this.cache.add(fullUrl, data);
             return data;
+
         } catch (err) {
             throw new Error(`Error fetching locations: ${(err as Error).message}`);
         }
     }
 
+    async fetchPokemon(name: string): Promise<Pokemon> {
+        const fullUrl = PokeAPI.baseURL + `/pokemon/${name}`;
+        const cached = this.cache.get<Pokemon>(fullUrl);
+        if (cached) {
+            return cached;
+        }
+
+        try {
+            const resp = await fetch(fullUrl);
+            if (!resp.ok) {
+                throw new Error(`${resp.status} ${resp.statusText}`);
+            }
+
+            const data = (await resp.json()) as Pokemon;
+            this.cache.add(fullUrl, data);
+            return data;
+
+        } catch (err) {
+            throw new Error(`Error fetching pokemon: ${(err as Error).message}`);
+        }   
+    }
 }
 
 export type ShallowLocations = {
@@ -75,3 +97,9 @@ export type Location = {
         }
     }[]
 } 
+
+export type Pokemon = {
+    name: string;
+    id: number;
+    base_experience: number;
+}
