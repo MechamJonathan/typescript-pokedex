@@ -11,7 +11,7 @@ export function cleanInput(input: string): string[] {
 export function startREPL(state: State){
     state.interface.prompt();
 
-    state.interface.on('line', (line) => {
+    state.interface.on('line', async (line) => {
         const received = cleanInput(line);
         const commands = state.registry;
 
@@ -22,7 +22,8 @@ export function startREPL(state: State){
 
         if (received[0] in commands) {
             const cmd = commands[received[0]]
-            cmd.callback(state);
+            const args = received.slice(1)
+            await cmd.callback(state, ...args);
         } else {
             console.log("Unkown command")
         }

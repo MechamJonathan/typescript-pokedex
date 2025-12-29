@@ -50,6 +50,7 @@ export class PokeAPI {
             throw new Error(`Error fetching locations: ${(err as Error).message}`);
         }
     }
+
 }
 
 export type ShallowLocations = {
@@ -67,4 +68,10 @@ export type Location = {
         name: string;
         url: string;
     }
-}
+    pokemon_encounters: {
+        pokemon: {
+            name: string,
+            url: string,
+        }
+    }[]
+} 
